@@ -1,0 +1,55 @@
+version: "2"
+services:
+  eureka-server:
+    build: eureka-server/
+    container_name: eureka-server
+    restart: always
+#    network_mode: "host"
+    hostname: localhost
+    ports:
+      - 8076:8076
+
+  config-server:
+    build: config-server/
+    container_name: config-server
+    restart: always
+#    network_mode: "host"
+    hostname: localhost
+    depends_on:
+      - eureka-server
+    ports:
+      - 8888:8888
+
+  api-gateway:
+    build: api-gateway/
+    container_name: api-gateway
+    restart: always
+    network_mode: "host"
+    hostname: localhost
+    depends_on:
+      - eureka-server
+    ports:
+      - 8080:8080
+
+  cooperai:
+    build: cooperai/
+    container_name: cooperai
+    restart: always
+#    network_mode: "host"
+    hostname: localhost
+    depends_on:
+      - eureka-server
+      - config-server
+    ports:
+      - 8085:8085
+
+  webapp:
+    build: webapp/
+    container_name: webapp
+    restart: always
+    network_mode: "host"
+    hostname: localhost
+    depends_on:
+      - eureka-server
+    ports:
+      - 4200:4200
